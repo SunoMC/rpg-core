@@ -26,3 +26,4 @@ replay_pid*
 # build folder
 .gradle/
 .idea/
+build/

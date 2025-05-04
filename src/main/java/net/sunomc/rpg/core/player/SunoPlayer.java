@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import net.sunomc.rpg.core.common.Group;
-import net.sunomc.rpg.core.handler.GroupHandler;
-import net.sunomc.rpg.core.data.MinecraftData;
+import net.sunomc.rpg.utlis.handler.GroupHandler;
+import net.sunomc.rpg.utlis.data.MinecraftData;
 
 
 /**

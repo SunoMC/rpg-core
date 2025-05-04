@@ -1,12 +1,12 @@
-package net.sunomc.rpg.core;
+package net.sunomc.rpg;
 
 import lombok.Getter;
 
-import net.sunomc.rpg.core.handler.EventHandler;
+import net.sunomc.rpg.utlis.handler.EventHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.sunomc.rpg.core.handler.GroupHandler;
+import net.sunomc.rpg.utlis.handler.GroupHandler;
 
 public final class RpgCore extends JavaPlugin {
 
@@ -17,6 +17,7 @@ public final class RpgCore extends JavaPlugin {
     public void onEnable() {
         GroupHandler groupHandler = new GroupHandler();
         EventHandler eventHandler = new EventHandler(Bukkit.getPluginManager(), this);
+        SunoMC sunoMC = new SunoMC();
 
         groupHandler.load();
         eventHandler.registerAll();

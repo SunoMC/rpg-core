@@ -1,6 +1,6 @@
 package net.sunomc.rpg.core.player;
 
-import net.sunomc.rpg.core.SunoMC;
+import net.sunomc.rpg.SunoMC;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

@@ -1,4 +1,4 @@
-package net.sunomc.rpg.core.handler;
+package net.sunomc.rpg.utlis.handler;
 
 import net.sunomc.rpg.core.player.SunoPlayerListener;
 import org.bukkit.plugin.PluginManager;

@@ -1,4 +1,4 @@
-package net.sunomc.rpg.core.data;
+package net.sunomc.rpg.utlis.data;
 
 import java.util.HashMap;
 import java.util.Map;

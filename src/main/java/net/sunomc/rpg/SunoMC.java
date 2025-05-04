@@ -1,4 +1,4 @@
-package net.sunomc.rpg.core;
+package net.sunomc.rpg;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,10 +25,7 @@ public final class SunoMC {
      */
     public static Set<SunoPlayer> onlinePlayer;
 
-    /**
-     * Constructs a new Suno instance and initializes the online player set.
-     */
-    public SunoMC() {
+    static {
         onlinePlayer = new HashSet<>();
     }
 

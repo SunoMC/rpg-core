@@ -1,4 +1,4 @@
-package net.sunomc.rpg.core.data;
+package net.sunomc.rpg.utlis.data;
 
 import java.util.*;
 
@@ -22,7 +22,7 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import net.sunomc.rpg.core.RpgCore;
+import net.sunomc.rpg.RpgCore;
 
 public class MinecraftData extends Data {
 

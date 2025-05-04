@@ -1,4 +1,4 @@
-package net.sunomc.rpg.core.handler;
+package net.sunomc.rpg.utlis.handler;
 
 import java.util.Collections;
 import java.util.HashSet;
