@@ -25,6 +25,10 @@ public class SunoPlayer {
         this.playerData = new MinecraftData();
     }
 
+    public void load() {
+        // load logik oder so hier
+    }
+
     /**
      * Sets data at the specified path
      * @param path Path to the data (e.g. "info.stats.strength")
