@@ -1,0 +1,6 @@
+name: rpg-core
+version: '1.0.1'
+main: net.sunomc.rpg.core.RpgCore
+api-version: '1.21'
+prefix: RPG
+authors: [ LeyCM ]
