@@ -1,4 +1,4 @@
-package net.sunomc.rpg.core.group;
+package net.sunomc.rpg.core.common;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package net.sunomc.rpg.core.group;
+package net.sunomc.rpg.core.handler;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import lombok.Getter;
 
+import net.sunomc.rpg.core.common.Group;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +32,8 @@ public class GroupHandler {
      * Load all groups for the GroupHandler
      */
     public void load() {
+        if(loaded) return;
+
         Set<Group> loadedGroups = new HashSet<>();
         // Set to DB later
         loadedGroups.add(new Group("admin", "AdminToll", "", 100, false, Set.of("suno.admin.*")));
