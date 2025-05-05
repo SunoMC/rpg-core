@@ -23,25 +23,34 @@ public final class SunoMC {
     /**
      * A set containing all currently online SunoPlayer instances.
      */
-    public static Set<SunoPlayer> onlinePlayer;
+    public static Set<SunoPlayer> onlinePlayers;
 
     static {
-        onlinePlayer = new HashSet<>();
+        onlinePlayers = new HashSet<>();
     }
 
     /**
      * Adds a player to the online player set if not already present.
      *
      * @param player the SunoPlayer to add
-     * @return true if the player was added, false if the player was already in the set
      */
-    public static boolean addPlayer(SunoPlayer player) {
-        player.load();
-        if (onlinePlayer.contains(player)) {
-            return false;
+    public static void addPlayer(SunoPlayer player) {
+        if (onlinePlayers.contains(player)) {
+            return;
         }
-        onlinePlayer.add(player);
-        return true;
+        onlinePlayers.add(player);
+    }
+
+    /**
+     * Removes a player from the online player set if present.
+     *
+     * @param player the SunoPlayer to remove
+     */
+    public static void removePlayer(SunoPlayer player) {
+        if (!onlinePlayers.contains(player)) {
+            return;
+        }
+        onlinePlayers.remove(player);
     }
 
     /**
@@ -49,7 +58,7 @@ public final class SunoMC {
      *
      * @return an unmodifiable set of all online SunoPlayers
      */
-    public static Set<SunoPlayer> getPlayers() {return onlinePlayer;}
+    public static Set<SunoPlayer> getPlayers() {return onlinePlayers;}
 
     /**
      * Gets a SunoPlayer by their name.
@@ -75,7 +84,7 @@ public final class SunoMC {
      * @return the SunoPlayer with the specified UUID, or null if not found
      */
     public static SunoPlayer getPlayer(UUID uuid) {
-        return onlinePlayer.stream()
+        return onlinePlayers.stream()
                 .filter(suno -> suno.getUniqueId().equals(uuid))
                 .findFirst()
                 .orElse(null);

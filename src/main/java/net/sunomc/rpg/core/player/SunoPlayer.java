@@ -2,11 +2,12 @@ package net.sunomc.rpg.core.player;
 
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.sunomc.rpg.core.common.Group;
-import net.sunomc.rpg.utlis.handler.GroupHandler;
-import net.sunomc.rpg.utlis.data.MinecraftData;
+import net.sunomc.rpg.utils.handler.GroupHandler;
+import net.sunomc.rpg.utils.data.MinecraftData;
 
 
 /**
@@ -27,6 +28,10 @@ public class SunoPlayer {
 
     public void load() {
         // load logik oder so hier
+    }
+
+    public void save() {
+        // save logik oder so hier
     }
 
     /**
@@ -62,22 +67,6 @@ public class SunoPlayer {
     }
 
     /**
-     * Gets the data as a JSON string
-     * @return JSON representation of player data
-     */
-    public String getDataAsJson() {
-        return playerData.toJson();
-    }
-
-    /**
-     * Gets the data as a YAML string
-     * @return YAML representation of player data
-     */
-    public String getDataAsYaml() {
-        return playerData.toYaml();
-    }
-
-    /**
      * @return The craftPlayer that is connected to the SunoPlayer
      */
     public Player getBukkitPlayer() {
@@ -110,6 +99,8 @@ public class SunoPlayer {
     public Group getOriginalGroup(){
         return GroupHandler.getGroupById(getData("suno.group.id", String.class, GroupHandler.getDefault().id()));
     }
+
+    public Location getLocation() {return craftPlayer.getLocation();}
 
     public boolean isVanished() {
         return getData("suno.admin.vanish", Boolean.class, true);
