@@ -3,6 +3,10 @@ package net.sunomc.rpg.utlis.data;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +25,11 @@ public class Data {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final Yaml yaml = new Yaml();
 
+    public enum Type {
+        JSON,
+        YAML
+    }
+
     /**
      * Stores a value at the specified path with automatic type handling.
      *
@@ -33,7 +42,6 @@ public class Data {
         switch (value) {
             case UUID uuid -> setDefault(path, uuid.toString());
             case null -> remove(path);
-
             default -> setDefault(path, value);
         }
     }
@@ -104,23 +112,87 @@ public class Data {
     }
 
     /**
+     * Converts all data to a string representation based on the specified type.
+     *
+     * @param type The output format type (JSON or YAML)
+     * @return String representation of the data
+     */
+    public String to(Type type) {
+        return switch (type) {
+            case JSON -> gson.toJson(data);
+            case YAML -> yaml.dump(data);
+        };
+    }
+
+    /**
      * Converts all data to a pretty-printed JSON string.
      *
      * @return JSON representation of the data
+     * @Deprecated Use the Data.to(Type) instead
      */
+    @Deprecated
     public String toJson() {
-        return gson.toJson(data);
+        return to(Type.JSON);
     }
 
     /**
      * Converts all data to a YAML string.
      *
      * @return YAML representation of the data
+     * @Deprecated Use the Data.to(Type) instead
      */
+    @Deprecated
     public String toYaml() {
-        return yaml.dump(data);
+        return to(Type.YAML);
     }
 
+    /**
+     * Saves the data to a file in the specified format.
+     *
+     * @param filePath The path to save the file to
+     * @param type The file format type (JSON or YAML)
+     * @throws IOException If there's an error writing the file
+     */
+    public void save(String filePath, Type type) throws IOException {
+        File file = new File(filePath);
+        // Create parent directories if they don't exist
+        file.getParentFile().mkdirs();
+        
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(to(type));
+        }
+    }
+
+    /**
+     * Generates a Data object from a file string in the specified format.
+     *
+     * @param fileString The file content as a string
+     * @param type The format type of the input (JSON or YAML)
+     * @return A new Data object containing the parsed data
+     */
+    public static Data generateFrom(String fileString, Type type) {
+        Data data = new Data();
+        
+        switch (type) {
+            case JSON -> data.data.putAll(gson.fromJson(fileString, Map.class));
+            case YAML -> data.data.putAll(yaml.load(fileString));
+        }
+        
+        return data;
+    }
+
+    /**
+     * Generates a Data object from a file in the specified format.
+     *
+     * @param filePath The path to the file to load
+     * @param type The format type of the file (JSON or YAML)
+     * @return A new Data object containing the parsed data
+     * @throws IOException If there's an error reading the file
+     */
+    public static Data generateFromFile(String filePath, Type type) throws IOException {
+        String content = new String(Files.readAllBytes(new File(filePath).toPath()));
+        return generateFrom(content, type);
+    }
 
     /**
      * Internal path-based value retrieval.
@@ -172,5 +244,4 @@ public class Data {
 
         current.remove(parts[parts.length - 1]);
     }
-
 }
