@@ -15,17 +15,10 @@ repositories {
     mavenLocal()
     mavenCentral()
 
-    maven("https://repo.codemc.io/repository/maven-public/") {
-        name = "codemc"
-    }
-
-    maven("https://repo.papermc.io/repository/maven-public/") {
-        name = "papermc"
-    }
-
-    maven("https://oss.sonatype.org/content/groups/public/") {
-        name = "sonatype"
-    }
+    maven("https://repo.codemc.io/repository/maven-public/")
+    maven("https://repo.dmulloy2.net/repository/public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://oss.sonatype.org/content/groups/public/")
 
 }
 
@@ -37,6 +30,8 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:$targetLombokVersion")
 
     compileOnly("io.papermc.paper:paper-api:$targetMcVersion-R0.1-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+    compileOnly(files("libs/craftbukkit"))
 }
 
 java {

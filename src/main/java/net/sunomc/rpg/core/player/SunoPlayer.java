@@ -13,16 +13,16 @@ import net.sunomc.rpg.utils.data.MinecraftData;
 /**
  * The SunoRPGPlayer Class that's contain data for other Systems<p>
  * <pre>
- * Vars: {@code craftPlayer} - is the ServerPlayer
+ * Vars: {@code bukkitPlayer} - is the ServerPlayer
  *       {@code playerData} - is the Space for data save</pre>
  */
 public class SunoPlayer {
-    private final Player craftPlayer;
+    private final Player bukkitPlayer;
     private final MinecraftData playerData;
 
 
-    public SunoPlayer(Player craftPlayer) {
-        this.craftPlayer = craftPlayer;
+    public SunoPlayer(Player bukkitPlayer) {
+        this.bukkitPlayer = bukkitPlayer;
         this.playerData = new MinecraftData();
     }
 
@@ -67,47 +67,116 @@ public class SunoPlayer {
     }
 
     /**
-     * @return The craftPlayer that is connected to the SunoPlayer
+     * Retrieves the Bukkit Player instance associated with this SunoPlayer.
+     *
+     * @return The bukkitPlayer instance connected to this SunoPlayer
      */
-    public Player getBukkitPlayer() {
-        return craftPlayer;
+    public Player getServerPlayer() {
+        return bukkitPlayer;
     }
 
     /**
-     * Getter with Nick and Vanish
+     * Gets the player's current display name, which may be modified by nicknames.
+     * Falls back to the original name if no nickname is set.
+     *
+     * @return The player's current display name (nickname if set, otherwise original name)
      */
     public String getName() {
-        return getData("suno.admin.nick.name", String.class, getOriginalName());
+        return playerData.get("suno.admin.nick.name", String.class, getOriginalName());
     }
 
+    /**
+     * Gets the player's original Minecraft username, unaffected by nicknames.
+     *
+     * @return The player's original Minecraft username
+     */
     public String getOriginalName() {
-        return craftPlayer.getName();
+        return bukkitPlayer.getName();
     }
 
+    /**
+     * Gets the player's current UUID, which may be modified by nick systems.
+     * Falls back to the original UUID if no modified UUID is set.
+     *
+     * @return The player's current UUID (modified if nick system is active, otherwise original)
+     */
     public UUID getUniqueId() {
-        return UUID.fromString(getData("suno.admin.nick.uuid", String.class, getOriginalUniqueId().toString()));
+        return playerData.get("suno.admin.nick.uuid", UUID.class, getOriginalUniqueId());
     }
 
+    /**
+     * Gets the player's original Minecraft UUID, unaffected by nick systems.
+     *
+     * @return The player's original Minecraft UUID
+     */
     public UUID getOriginalUniqueId() {
-        return craftPlayer.getUniqueId();
+        return bukkitPlayer.getUniqueId();
     }
 
-    public Group getGroup(){
-        return GroupHandler.getGroupById(getData("suno.admin.nick.group", String.class, getOriginalGroup().id()));
+    /**
+     * Gets the player's current group, which may be modified by nick systems.
+     * Falls back to the original group if no modified group is set.
+     *
+     * @return The player's current group (modified if nick system is active, otherwise original)
+     */
+    public Group getGroup() {
+        return GroupHandler.getGroupById(playerData.get("suno.admin.nick.group", String.class, getOriginalGroup().id()));
     }
 
-    public Group getOriginalGroup(){
-        return GroupHandler.getGroupById(getData("suno.group.id", String.class, GroupHandler.getDefault().id()));
+    /**
+     * Gets the player's original group, unaffected by nick systems.
+     *
+     * @return The player's original group
+     */
+    public Group getOriginalGroup() {
+        return GroupHandler.getGroupById(playerData.get("suno.group.id", String.class, GroupHandler.getDefault().id()));
     }
 
-    public Location getLocation() {return craftPlayer.getLocation();}
+    /**
+     * Gets the player's current location in the world.
+     *
+     * @return The player's current location
+     */
+    public Location getLocation() {
+        return bukkitPlayer.getLocation();
+    }
 
+    /**
+     * Checks if the player is currently vanished (hidden from other players).
+     *
+     * @return true if the player is vanished, false otherwise
+     */
     public boolean isVanished() {
-        return getData("suno.admin.vanish", Boolean.class, true);
+        return playerData.get("suno.admin.vanish", Boolean.class, false);
     }
 
+    /**
+     * Checks if the player has a specific permission, based on their original group.
+     *
+     * @param permission The permission string to check
+     * @return true if the player has the permission, false otherwise
+     */
     public boolean hasPermission(String permission) {
         return getOriginalGroup().hasPermission(permission);
+    }
+
+    /**
+     * Gets the player's body yaw rotation value.
+     *
+     * @return The player's body yaw rotation in degrees
+     */
+    public float getBodyYaw() {
+        return playerData.get("minecraft.player.body_yaw", Float.class, 0f);
+    }
+
+    /**
+     * Updates the player's body yaw rotation value.
+     * This is typically called by the {@link PlayerListener} when handling player movement events.
+     *
+     * @param yaw The new body yaw rotation value in degrees
+     */
+    protected void setBodyYaw(float yaw) {
+        playerData.set("minecraft.player.body_yaw", yaw);
     }
 
 }

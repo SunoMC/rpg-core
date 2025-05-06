@@ -1,6 +1,6 @@
 package net.sunomc.rpg.utils.handler;
 
-import net.sunomc.rpg.core.player.SunoPlayerListener;
+import net.sunomc.rpg.core.player.PlayerListener;
 import net.sunomc.rpg.game.branding.ChatManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,7 +16,7 @@ public class EventHandler {
 
     public boolean registerAll() {
         try {
-            manager.registerEvents(new SunoPlayerListener(), plugin);
+            manager.registerEvents(new PlayerListener(), plugin);
             manager.registerEvents(new ChatManager(), plugin);
             return true;
         } catch (Exception e) {
