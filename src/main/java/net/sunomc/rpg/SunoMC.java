@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import net.sunomc.rpg.core.player.SunoPlayer;
+import net.sunomc.rpg.core.common.SunoPlayer;
 
 /**
  * The Suno class manages online players in the RPG system.
@@ -30,7 +30,7 @@ public final class SunoMC {
     }
 
     /**
-     * Adds a player to the online player set if not already present.
+     * Adds a listener to the online listener set if not already present.
      *
      * @param player the SunoPlayer to add
      */
@@ -42,7 +42,7 @@ public final class SunoMC {
     }
 
     /**
-     * Removes a player from the online player set if present.
+     * Removes a listener from the online listener set if present.
      *
      * @param player the SunoPlayer to remove
      */
@@ -63,7 +63,7 @@ public final class SunoMC {
     /**
      * Gets a SunoPlayer by their name.
      *
-     * @param name the name of the player to retrieve
+     * @param name the name of the listener to retrieve
      * @return the SunoPlayer with the specified name, or null if not found
      */
     public static SunoPlayer getPlayer(String name) {return getPlayer(Bukkit.getOfflinePlayer(name).getUniqueId());};
@@ -73,14 +73,14 @@ public final class SunoMC {
      *
      * @param player the Bukkit Player instance
      * @return the corresponding SunoPlayer, or null if not found
-     * @throws NullPointerException if player is null
+     * @throws NullPointerException if listener is null
      */
     public static SunoPlayer getPlayer(@NotNull Player player) {return getPlayer(player.getUniqueId());}
 
     /**
      * Gets a SunoPlayer by their UUID.
      *
-     * @param uuid the UUID of the player to retrieve
+     * @param uuid the UUID of the listener to retrieve
      * @return the SunoPlayer with the specified UUID, or null if not found
      */
     public static SunoPlayer getPlayer(UUID uuid) {

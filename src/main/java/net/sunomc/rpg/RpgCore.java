@@ -2,16 +2,12 @@ package net.sunomc.rpg;
 
 import lombok.Getter;
 
-import net.sunomc.rpg.core.player.SunoPlayer;
-import net.sunomc.rpg.utils.handler.CommandHandler;
-import net.sunomc.rpg.utils.handler.EventHandler;
-import net.sunomc.rpg.utils.handler.PacketHandler;
+import net.sunomc.rpg.core.common.SunoPlayer;
+import net.sunomc.rpg.core.handler.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.sunomc.rpg.utils.handler.GroupHandler;
-
-import java.io.File;
+import java.io.IOException;
 
 public final class RpgCore extends JavaPlugin {
 
@@ -29,7 +25,13 @@ public final class RpgCore extends JavaPlugin {
         EventHandler eventHandler = new EventHandler(Bukkit.getPluginManager(), this);
         PacketHandler packetHandler = new PacketHandler();
         CommandHandler commandHandler = new CommandHandler(this);
+        TranslationHandler translationHandler = new TranslationHandler(null);
 
+        try {
+            TranslationHandler.loadLanguageFile("en-en");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         groupHandler.load();
         eventHandler.registerAll();
         commandHandler.registerAll();

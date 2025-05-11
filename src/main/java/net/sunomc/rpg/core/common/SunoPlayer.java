@@ -1,26 +1,19 @@
-package net.sunomc.rpg.core.player;
+package net.sunomc.rpg.core.common;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.sunomc.rpg.SunoMC;
-import net.sunomc.rpg.core.common.ChatIcon;
-import net.sunomc.rpg.utils.utils.ChatBuilder;
-import org.bukkit.GameMode;
+import net.sunomc.rpg.core.builder.ChatBuilder;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import net.sunomc.rpg.core.common.Group;
-import net.sunomc.rpg.utils.handler.GroupHandler;
-import net.sunomc.rpg.utils.data.MinecraftData;
+import net.sunomc.rpg.core.handler.GroupHandler;
+import net.sunomc.rpg.core.data.MinecraftData;
 import org.jetbrains.annotations.NotNull;
-
-import static org.bukkit.GameMode.*;
 
 
 /**
@@ -91,94 +84,94 @@ public class SunoPlayer {
     }
 
     /**
-     * Gets the player's current display name, which may be modified by nicknames.
+     * Gets the listener's current display name, which may be modified by nicknames.
      * Falls back to the original name if no nickname is set.
      *
-     * @return The player's current display name (nickname if set, otherwise original name)
+     * @return The listener's current display name (nickname if set, otherwise original name)
      */
     public String getName() {
         return playerData.get("suno.admin.nick.name", String.class, getOriginalName());
     }
 
     /**
-     * Gets the player's original Minecraft username, unaffected by nicknames.
+     * Gets the listener's original Minecraft username, unaffected by nicknames.
      *
-     * @return The player's original Minecraft username
+     * @return The listener's original Minecraft username
      */
     public String getOriginalName() {
         return bukkitPlayer.getName();
     }
 
     /**
-     * Gets the player's current UUID, which may be modified by nick systems.
+     * Gets the listener's current UUID, which may be modified by nick systems.
      * Falls back to the original UUID if no modified UUID is set.
      *
-     * @return The player's current UUID (modified if nick system is active, otherwise original)
+     * @return The listener's current UUID (modified if nick system is active, otherwise original)
      */
     public UUID getUniqueId() {
         return playerData.get("suno.admin.nick.uuid", UUID.class, getOriginalUniqueId());
     }
 
     /**
-     * Gets the player's original Minecraft UUID, unaffected by nick systems.
+     * Gets the listener's original Minecraft UUID, unaffected by nick systems.
      *
-     * @return The player's original Minecraft UUID
+     * @return The listener's original Minecraft UUID
      */
     public UUID getOriginalUniqueId() {
         return bukkitPlayer.getUniqueId();
     }
 
     /**
-     * Gets the player's current group, which may be modified by nick systems.
+     * Gets the listener's current group, which may be modified by nick systems.
      * Falls back to the original group if no modified group is set.
      *
-     * @return The player's current group (modified if nick system is active, otherwise original)
+     * @return The listener's current group (modified if nick system is active, otherwise original)
      */
     public Group getGroup() {
         return GroupHandler.getGroupById(playerData.get("suno.admin.nick.group", String.class, getOriginalGroup().id()));
     }
 
     /**
-     * Gets the player's original group, unaffected by nick systems.
+     * Gets the listener's original group, unaffected by nick systems.
      *
-     * @return The player's original group
+     * @return The listener's original group
      */
     public Group getOriginalGroup() {
         return GroupHandler.getGroupById(playerData.get("suno.group.id", String.class, GroupHandler.getDefault().id()));
     }
 
     /**
-     * Gets the player's current location in the world.
+     * Gets the listener's current location in the world.
      *
-     * @return The player's current location
+     * @return The listener's current location
      */
     public Location getLocation() {
         return bukkitPlayer.getLocation();
     }
 
     /**
-     * Checks if the player is currently vanished (hidden from other players).
+     * Checks if the listener is currently vanished (hidden from other players).
      *
-     * @return true if the player is vanished, false otherwise
+     * @return true if the listener is vanished, false otherwise
      */
     public boolean isVanished() {
         return playerData.get("suno.admin.vanish", Boolean.class, false);
     }
 
     /**
-     * Checks if the player has a specific permission, based on their original group.
+     * Checks if the listener has a specific permission, based on their original group.
      *
      * @param permission The permission string to check
-     * @return true if the player has the permission, false otherwise
+     * @return true if the listener has the permission, false otherwise
      */
     public boolean hasPermission(String permission) {
         return getOriginalGroup().hasPermission(permission);
     }
 
     /**
-     * Gets the player's body yaw rotation value.
+     * Gets the listener's body yaw rotation value.
      *
-     * @return The player's body yaw rotation in degrees default 0
+     * @return The listener's body yaw rotation in degrees default 0
      */
     public float getBodyYaw() {
         if(bukkitPlayer instanceof LivingEntity entity) {
@@ -188,7 +181,7 @@ public class SunoPlayer {
     }
 
     /**
-     * Sends a formatted message to the player with specified message type.
+     * Sends a formatted message to the listener with specified message type.
      *
      * @param type The type of message which determines the icon and styling
      * @param sender The component representing the message sender
@@ -203,7 +196,7 @@ public class SunoPlayer {
     }
 
     /**
-     * Sends a fully customizable formatted message to the player.
+     * Sends a fully customizable formatted message to the listener.
      *
      * @param icon The ChatIcon to display with the message
      * @param sender The component representing the message sender
@@ -218,7 +211,7 @@ public class SunoPlayer {
     }
 
     /**
-     * Sends a standard chat message to the player.
+     * Sends a standard chat message to the listener.
      * Automatically uses the sender's name and enables message hover/click functionality.
      * @param type The type of message which determines the icon and styling
      * @param sender The Player object representing the message sender
@@ -239,7 +232,7 @@ public class SunoPlayer {
     }
 
     /**
-     * Sends a standard chat message to the player.
+     * Sends a standard chat message to the listener.
      * Automatically uses the sender's name and enables message hover/click functionality.
      *
      * @param sender The Player object representing the message sender

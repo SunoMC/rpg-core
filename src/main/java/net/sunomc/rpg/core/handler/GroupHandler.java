@@ -1,4 +1,4 @@
-package net.sunomc.rpg.utils.handler;
+package net.sunomc.rpg.core.handler;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,7 +13,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class GroupHandler {
+public final class GroupHandler {
     private static Group defaultGroup;
     private static Set<Group> groups;
     private final Scoreboard scoreboard;
@@ -38,7 +38,7 @@ public class GroupHandler {
         // Set to DB later
         loadedGroups.add(new Group("admin", "AdminToll", "", 100, false, Set.of("suno.admin.*")));
         loadedGroups.add(new Group("mod", "Mod der Beste", "", 50, false, Set.of("suno.mod.*")));
-        loadedGroups.add(new Group("player", "player", "", 0, true, Set.of("suno.player.*")));
+        loadedGroups.add(new Group("listener", "listener", "", 0, true, Set.of("suno.listener.*")));
 
         defaultGroup = loadedGroups.stream()
                 .filter(Group::isDefault)

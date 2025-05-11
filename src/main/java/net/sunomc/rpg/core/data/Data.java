@@ -1,4 +1,4 @@
-package net.sunomc.rpg.utils.data;
+package net.sunomc.rpg.core.data;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class Data {
     /**
      * Stores a value at the specified path with automatic type handling.
      *
-     * @param path The dot-separated path (e.g. "player.stats.health")
+     * @param path The dot-separated path (e.g. "listener.stats.health")
      * @param value The value to store (supports special type conversion)
      */
     public void set(String path, Object value) {
@@ -87,7 +87,7 @@ public class Data {
     /**
      * Retrieves a subsection of the data as a new Data object.
      *
-     * @param path Dot-separated path to the section (e.g. "player.stats")
+     * @param path Dot-separated path to the section (e.g. "listener.stats")
      * @return A new Data object representing the section, or null if path is invalid
      */
     public @Nullable Data getSection(@NotNull String path) {
@@ -104,7 +104,7 @@ public class Data {
     /**
      * Inserts a section from another Data object at the given path.
      *
-     * @param path Dot-separated path to set the section (e.g. "player.stats")
+     * @param path Dot-separated path to set the section (e.g. "listener.stats")
      * @param section The Data object to insert
      */
     public void setSection(@NotNull String path, @NotNull Data section) {
@@ -127,8 +127,8 @@ public class Data {
     /**
      * Converts all data to a pretty-printed JSON string.
      *
-     * @return JSON representation of the data
-     * @Deprecated Use the Data.to(Type) instead
+     * @return JSON representation of the data <br>
+     * {@code @Deprecated} Use the Data.to(Type) instead
      */
     @Deprecated
     public String toJson() {
@@ -138,8 +138,8 @@ public class Data {
     /**
      * Converts all data to a YAML string.
      *
-     * @return YAML representation of the data
-     * @Deprecated Use the Data.to(Type) instead
+     * @return YAML representation of the data <br>
+     * {@code @Deprecated} Use the Data.to(Type) instead
      */
     @Deprecated
     public String toYaml() {
@@ -155,7 +155,7 @@ public class Data {
      */
     public void save(String filePath, Type type) throws IOException {
         File file = new File(filePath);
-        // Create parent directories if they don't exist
+        //noinspection ResultOfMethodCallIgnored
         file.getParentFile().mkdirs();
         
         try (FileWriter writer = new FileWriter(file)) {
@@ -174,7 +174,8 @@ public class Data {
         Data data = new Data();
         
         switch (type) {
-            case JSON -> data.data.putAll(gson.fromJson(fileString, Map.class));
+            case JSON -> //noinspection unchecked
+                    data.data.putAll(gson.fromJson(fileString, Map.class));
             case YAML -> data.data.putAll(yaml.load(fileString));
         }
         

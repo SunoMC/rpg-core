@@ -1,4 +1,4 @@
-package net.sunomc.rpg.utils.handler;
+package net.sunomc.rpg.core.handler;
 
 import org.bukkit.Bukkit;
 
@@ -8,15 +8,15 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.*;
 
 import net.sunomc.rpg.RpgCore;
-import net.sunomc.rpg.utils.events.PacketReceiveEvent;
-import net.sunomc.rpg.utils.events.PacketSendEvent;
+import net.sunomc.rpg.core.events.PacketReceiveEvent;
+import net.sunomc.rpg.core.events.PacketSendEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class PacketHandler extends PacketAdapter {
+public final class PacketHandler extends PacketAdapter {
     private static final List<PacketType> SUPPORTED_PACKET_TYPES = getSupportedPacketTypes();
 
     public PacketHandler() {

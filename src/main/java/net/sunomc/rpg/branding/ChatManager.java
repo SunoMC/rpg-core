@@ -12,8 +12,8 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.sunomc.rpg.RpgCore;
 import net.sunomc.rpg.SunoMC;
 import net.sunomc.rpg.core.common.ChatIcon;
-import net.sunomc.rpg.core.common.SunoChatEvent;
-import net.sunomc.rpg.core.player.SunoPlayer;
+import net.sunomc.rpg.core.events.SunoChatEvent;
+import net.sunomc.rpg.core.common.SunoPlayer;
 
 public class ChatManager implements Listener {
 

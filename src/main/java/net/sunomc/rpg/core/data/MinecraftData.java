@@ -1,4 +1,4 @@
-package net.sunomc.rpg.utils.data;
+package net.sunomc.rpg.core.data;
 
 import java.util.*;
 
@@ -29,7 +29,7 @@ public class MinecraftData extends Data {
     /**
      * Stores a value at the specified path with automatic type handling.
      *
-     * @param path The dot-separated path (e.g. "player.stats.health")
+     * @param path The dot-separated path (e.g. "listener.stats.health")
      * @param value The value to store (supports special type conversion)
      */
     @Override

@@ -1,14 +1,13 @@
-package net.sunomc.rpg.utils.handler;
-
-import net.sunomc.rpg.branding.ChatManager;
-import net.sunomc.rpg.branding.MsgCommand;
-import net.sunomc.rpg.core.player.PlayerListener;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
+package net.sunomc.rpg.core.handler;
 
 import java.util.Objects;
 
-public class CommandHandler {
+import org.bukkit.plugin.java.JavaPlugin;
+
+import net.sunomc.rpg.branding.MsgCommand;
+
+
+public final class CommandHandler {
     private JavaPlugin plugin;
 
     public CommandHandler(JavaPlugin javaPlugin) {

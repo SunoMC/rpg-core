@@ -1,8 +1,10 @@
-package net.sunomc.rpg.core.common;
+package net.sunomc.rpg.core.events;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import net.sunomc.rpg.core.common.ChatIcon;
+import net.sunomc.rpg.core.common.SunoPlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,8 +13,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import net.sunomc.rpg.core.player.SunoPlayer;
 
 @Setter
 @Getter

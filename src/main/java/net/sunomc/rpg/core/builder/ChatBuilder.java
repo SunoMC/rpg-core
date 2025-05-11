@@ -1,4 +1,4 @@
-package net.sunomc.rpg.utils.utils;
+package net.sunomc.rpg.core.builder;
 
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ import net.sunomc.rpg.core.common.ChatIcon;
 
 /**
  * Utility class for building formatted chat messages with consistent styling.
- * Provides methods to create chat messages with icons, clickable player names,
+ * Provides methods to create chat messages with icons, clickable listener names,
  * and various message types (public, private, system).
  */
 public class ChatBuilder {
@@ -22,11 +22,11 @@ public class ChatBuilder {
     private static final TextColor ARROW_COLOR = TextColor.color(0x555555);
 
     /**
-     * Builds a clickable player name component.
+     * Builds a clickable listener name component.
      *
-     * @param nameComponent The component representing the player's name
+     * @param nameComponent The component representing the listener's name
      * @param suggestMsg Whether to make the name clickable for sending messages
-     * @return Component with the player name, optionally with click/hover events
+     * @return Component with the listener name, optionally with click/hover events
      */
     public static Component buildClickablePlayerName(Component nameComponent,
                                                      boolean suggestMsg) {

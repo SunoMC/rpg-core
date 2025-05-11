@@ -1,25 +1,26 @@
-package net.sunomc.rpg.core.player;
+package net.sunomc.rpg.core.listener;
 
 
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import org.jetbrains.annotations.NotNull;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import net.sunomc.rpg.core.common.ChatIcon;
-import net.sunomc.rpg.utils.utils.ChatBuilder;
-import org.jetbrains.annotations.NotNull;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 
-import net.sunomc.rpg.utils.events.PacketSendEvent;
+import net.sunomc.rpg.core.common.ChatIcon;
+import net.sunomc.rpg.core.common.SunoPlayer;
+import net.sunomc.rpg.core.events.PacketSendEvent;
 import net.sunomc.rpg.SunoMC;
-import net.sunomc.rpg.utils.events.PacketReceiveEvent;
+import net.sunomc.rpg.core.events.PacketReceiveEvent;
 
 public class PlayerListener implements Listener {
 

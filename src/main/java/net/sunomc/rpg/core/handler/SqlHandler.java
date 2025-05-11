@@ -1,4 +1,4 @@
-package net.sunomc.rpg.utils.utils;
+package net.sunomc.rpg.core.handler;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;

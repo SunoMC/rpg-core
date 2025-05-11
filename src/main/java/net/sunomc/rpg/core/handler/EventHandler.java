@@ -1,11 +1,11 @@
-package net.sunomc.rpg.utils.handler;
+package net.sunomc.rpg.core.handler;
 
-import net.sunomc.rpg.core.player.PlayerListener;
+import net.sunomc.rpg.core.listener.PlayerListener;
 import net.sunomc.rpg.branding.ChatManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class EventHandler {
+public final class EventHandler {
     private PluginManager manager;
     private JavaPlugin plugin;
 
