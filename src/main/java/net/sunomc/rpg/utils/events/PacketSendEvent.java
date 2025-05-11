@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -25,6 +26,8 @@ public class PacketSendEvent extends Event implements Cancellable {
         this.packetEvent = packetEvent;
         this.container = container;
     }
+
+    public Player getPlayer() {return packetEvent.getPlayer();}
     public PacketType getType() {return container.getType();}
     public PacketContainer getPacket() {return container;}
 

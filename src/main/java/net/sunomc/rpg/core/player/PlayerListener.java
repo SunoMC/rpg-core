@@ -1,7 +1,12 @@
 package net.sunomc.rpg.core.player;
 
-import net.sunomc.rpg.utils.utils.BodyYawUtil;
-import org.bukkit.entity.Player;
+
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.sunomc.rpg.core.common.ChatIcon;
+import net.sunomc.rpg.utils.utils.ChatBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import org.bukkit.event.EventHandler;
@@ -9,10 +14,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
+
+import net.sunomc.rpg.utils.events.PacketSendEvent;
 import net.sunomc.rpg.SunoMC;
 import net.sunomc.rpg.utils.events.PacketReceiveEvent;
-
-import com.comphenix.protocol.PacketType;
 
 public class PlayerListener implements Listener {
 
@@ -31,14 +38,41 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPacketReceive(@NotNull PacketReceiveEvent event) {
-        PacketType type = event.getType();
+    public void onPacketReceiving(@NotNull PacketReceiveEvent event) {
 
-        if (type == PacketType.Play.Client.LOOK || type == PacketType.Play.Client.POSITION_LOOK) {
-            Player player = event.getPlayer();
-            float bodyYaw = BodyYawUtil.getBodyYaw(player);
-            SunoMC.getPlayer(player).
+    }
+
+    @EventHandler
+    public void onPacketSending(@NotNull PacketSendEvent event) {
+        if (event.getType().equals(PacketType.Play.Server.CHAT)) {
+            modifyChatPacket(event.getPacket());
         }
+    }
+
+    private void modifyChatPacket(PacketContainer packet) {
+        WrappedChatComponent wrapped = packet.getChatComponents().read(0);
+        if (wrapped == null) return;
+
+        Component originalComponent = GsonComponentSerializer.gson().deserialize(wrapped.getJson());
+        String plainText = PlainTextComponentSerializer.plainText().serialize(originalComponent);
+
+        if (!matchesBracketPattern(plainText)) {
+            Component modifiedComponent = Component.text()
+                    .append(Component.text("["))
+                    .append(ChatIcon.Preset.NETWORK.asIcon().asComponent())
+                    .append(Component.text("] "))
+                    .append(originalComponent)
+                    .build();
+
+            packet.getChatComponents().write(0, WrappedChatComponent.fromJson(
+                    GsonComponentSerializer.gson().serialize(modifiedComponent)
+            ));
+        }
+    }
+
+    private boolean matchesBracketPattern(String message) {
+        if (message.length() < 3) return false;
+        return message.charAt(0) == '[' && message.charAt(2) == ']';
     }
 
 }

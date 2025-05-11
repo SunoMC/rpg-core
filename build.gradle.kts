@@ -31,7 +31,6 @@ dependencies {
 
     compileOnly("io.papermc.paper:paper-api:$targetMcVersion-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
-    compileOnly(files("libs/craftbukkit"))
 }
 
 java {
@@ -41,7 +40,12 @@ java {
 publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
+
+        groupId = group.toString()
+        artifactId = description
+        version = version
     }
+
 }
 
 tasks.withType<JavaCompile>() {

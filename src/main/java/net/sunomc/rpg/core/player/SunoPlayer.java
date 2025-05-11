@@ -1,13 +1,26 @@
 package net.sunomc.rpg.core.player;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.sunomc.rpg.SunoMC;
+import net.sunomc.rpg.core.common.ChatIcon;
+import net.sunomc.rpg.utils.utils.ChatBuilder;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.sunomc.rpg.core.common.Group;
 import net.sunomc.rpg.utils.handler.GroupHandler;
 import net.sunomc.rpg.utils.data.MinecraftData;
+import org.jetbrains.annotations.NotNull;
+
+import static org.bukkit.GameMode.*;
 
 
 /**
@@ -26,12 +39,14 @@ public class SunoPlayer {
         this.playerData = new MinecraftData();
     }
 
-    public void load() {
+    public SunoPlayer load() {
         // load logik oder so hier
+        return this;
     }
 
-    public void save() {
+    public SunoPlayer save() {
         // save logik oder so hier
+        return this;
     }
 
     /**
@@ -163,20 +178,101 @@ public class SunoPlayer {
     /**
      * Gets the player's body yaw rotation value.
      *
-     * @return The player's body yaw rotation in degrees
+     * @return The player's body yaw rotation in degrees default 0
      */
     public float getBodyYaw() {
-        return playerData.get("minecraft.player.body_yaw", Float.class, 0f);
+        if(bukkitPlayer instanceof LivingEntity entity) {
+            return entity.getBodyYaw();
+        }
+        return 0;
     }
 
     /**
-     * Updates the player's body yaw rotation value.
-     * This is typically called by the {@link PlayerListener} when handling player movement events.
+     * Sends a formatted message to the player with specified message type.
      *
-     * @param yaw The new body yaw rotation value in degrees
+     * @param type The type of message which determines the icon and styling
+     * @param sender The component representing the message sender
+     * @param message The content of the message to send
+     * @param hoverMsg Whether the sender name should be clickable for messaging
      */
-    protected void setBodyYaw(float yaw) {
-        playerData.set("minecraft.player.body_yaw", yaw);
+    public void sendMessage(@NotNull ChatIcon.Preset type,
+                            Component sender,
+                            Component message,
+                            boolean hoverMsg) {
+        sendMessage(ChatBuilder.buildMessage(type.asIcon(), sender, message, hoverMsg));
+    }
+
+    /**
+     * Sends a fully customizable formatted message to the player.
+     *
+     * @param icon The ChatIcon to display with the message
+     * @param sender The component representing the message sender
+     * @param message The content of the message to send
+     * @param hoverMsg Whether the sender name should be clickable for messaging
+     */
+    public void sendMessage(ChatIcon icon,
+                            Component sender,
+                            Component message,
+                            boolean hoverMsg) {
+        sendMessage(ChatBuilder.buildMessage(icon, sender, message, hoverMsg));
+    }
+
+    /**
+     * Sends a standard chat message to the player.
+     * Automatically uses the sender's name and enables message hover/click functionality.
+     * @param type The type of message which determines the icon and styling
+     * @param sender The Player object representing the message sender
+     * @param message The content of the message to send
+     */
+    public void sendMessage(ChatIcon.Preset type,
+                            Player sender,
+                            Component message) {
+        Component senderName = Component.text(SunoMC.getPlayer(sender).getName());
+        boolean msg = true;
+
+        if (sender.getUniqueId().equals(bukkitPlayer.getUniqueId())) {
+            senderName = Component.text("You").color(TextColor.color(0xe8c9f5));
+            msg = false;
+        }
+
+        sendMessage(ChatBuilder.buildMessage(type.asIcon(), senderName, message, msg));
+    }
+
+    /**
+     * Sends a standard chat message to the player.
+     * Automatically uses the sender's name and enables message hover/click functionality.
+     *
+     * @param sender The Player object representing the message sender
+     * @param message The content of the message to send
+     */
+    public void sendMessage(Player sender,
+                            Component message) {
+        sendMessage(ChatIcon.Preset.CHAT, sender, message);
+    }
+
+    // TODO : do docs
+    public void sendMessage(Component message) {
+        bukkitPlayer.sendMessage(message);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        SunoPlayer sunoPlayer = (SunoPlayer) obj;
+
+        return this.getUniqueId().equals(sunoPlayer.getUniqueId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUniqueId());
     }
 
 }

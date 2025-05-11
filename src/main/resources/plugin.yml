@@ -1,6 +1,9 @@
-name: rpg-core
+name: SunoRpgCore
 version: '1.0.1'
 main: net.sunomc.rpg.RpgCore
 api-version: '1.21'
 prefix: RPG
 authors: [ LeyCM ]
+commands:
+  msg:
+  r:
