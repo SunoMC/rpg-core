@@ -19,7 +19,7 @@ public final class RpgCore extends JavaPlugin {
 
         instance = this;
 
-        Bukkit.getOnlinePlayers().forEach(player -> SunoMC.addPlayer(new SunoPlayer(player).load()));
+        Bukkit.getOnlinePlayers().forEach(player -> SunoMC.addPlayer(new SunoPlayer(player)));
 
         GroupHandler groupHandler = new GroupHandler();
         EventHandler eventHandler = new EventHandler(Bukkit.getPluginManager(), this);

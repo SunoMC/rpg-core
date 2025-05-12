@@ -2,10 +2,6 @@ package net.sunomc.rpg.core.events;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import net.sunomc.rpg.core.common.ChatIcon;
-import net.sunomc.rpg.core.common.SunoPlayer;
-import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import net.kyori.adventure.text.Component;
@@ -13,18 +9,22 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.World;
 
+import net.sunomc.rpg.core.common.ChatIcon;
+import net.sunomc.rpg.core.common.SunoPlayer;
 @Setter
 @Getter
 public class SunoChatEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
+    private final SunoPlayer player;
+    private boolean cancel;
+
     private final Component originalMessage;
     private Component message;
     private ChatIcon icon;
-    private final SunoPlayer player;
-    private boolean cancel;
     private World targetWorld;
 
     public SunoChatEvent(SunoPlayer player, Component message, ChatIcon icon) {

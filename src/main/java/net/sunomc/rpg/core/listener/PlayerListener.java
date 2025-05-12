@@ -1,6 +1,8 @@
 package net.sunomc.rpg.core.listener;
 
 
+import net.sunomc.rpg.RpgCore;
+import net.sunomc.rpg.core.events.SunoPlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
 import net.kyori.adventure.text.Component;
@@ -28,14 +30,15 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         SunoPlayer sunoPlayer = new SunoPlayer(event.getPlayer());
         SunoMC.addPlayer(sunoPlayer);
-        sunoPlayer.load();
+
+        RpgCore.getInstance().getServer().getPluginManager().callEvent(new SunoPlayerJoinEvent(sunoPlayer));
+
     }
 
     @EventHandler
     public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
         SunoPlayer sunoPlayer = SunoMC.getPlayer(event.getPlayer());
         SunoMC.removePlayer(sunoPlayer);
-        sunoPlayer.save();
     }
 
     @EventHandler

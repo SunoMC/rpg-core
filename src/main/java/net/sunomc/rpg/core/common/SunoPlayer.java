@@ -1,12 +1,23 @@
 package net.sunomc.rpg.core.common;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Level;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.sunomc.rpg.RpgCore;
 import net.sunomc.rpg.SunoMC;
 import net.sunomc.rpg.core.builder.ChatBuilder;
+import net.sunomc.rpg.core.data.Data;
+import net.sunomc.rpg.core.handler.SqlHandler;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,22 +35,93 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SunoPlayer {
     private final Player bukkitPlayer;
-    private final MinecraftData playerData;
+    private MinecraftData playerData;
+
+    @Getter
+    private boolean firstTime;
 
 
     public SunoPlayer(Player bukkitPlayer) {
         this.bukkitPlayer = bukkitPlayer;
         this.playerData = new MinecraftData();
+        firstTime = true;
     }
 
-    public SunoPlayer load() {
-        // load logik oder so hier
-        return this;
+    public void initializeDefaultData() {
+        LocalDateTime time = LocalDateTime.now();
+        playerData.set("network.ip_address", Objects.requireNonNull(bukkitPlayer.getAddress()).getAddress().getHostAddress());
+        playerData.set("network.ip.first_join", time);
+
+        playerData.set("suno.group.id", GroupHandler.getDefault().id());
+        
+        playerData.set("suno.stats.playtime", 0L);
+        playerData.set("suno.stats.login.count", 1);
+        playerData.set("suno.stats.login.last", time);
     }
 
-    public SunoPlayer save() {
-        // save logik oder so hier
-        return this;
+    public void load() {
+        try {
+            SqlHandler sqlHandler = SqlHandler.getInstance();
+
+            sqlHandler.createTable("player_data",
+                    "uuid VARCHAR(36) PRIMARY KEY, " +
+                            "name VARCHAR(16), " +
+                            "data TEXT, " +
+                            "ip_address VARCHAR(45), " +  // IPv6 45 Zeichen
+                            "first_join TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
+                            "last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+
+            String query = "SELECT data, ip_address, first_join FROM player_data WHERE uuid = ?";
+            try (PreparedStatement stmt = sqlHandler.prepareStatement(query)) {
+                stmt.setString(1, getOriginalUniqueId().toString());
+
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    String jsonData = rs.getString("data");
+                    Timestamp firstJoin = rs.getTimestamp("first_join");
+
+                    playerData = (MinecraftData) Data.generateFrom(jsonData, Data.Type.JSON);
+
+                    playerData.set("network.ip_address", Objects.requireNonNull(bukkitPlayer.getAddress()).getAddress().getHostAddress());
+                    playerData.set("network.first_join", firstJoin != null ? firstJoin.toLocalDateTime() : null);
+                    firstTime = false;
+                } else {
+                    initializeDefaultData();
+                }
+            }
+        } catch (SQLException e) {
+            RpgCore.getInstance().getLogger().log(Level.SEVERE,
+                    "Failed to load player data for " + getOriginalName(), e);
+        }
+    }
+
+    public void save() {
+        try {
+            SqlHandler sqlHandler = SqlHandler.getInstance();
+
+            String jsonData = this.playerData.to(Data.Type.JSON);
+            String ipAddress = getData("network.ip_address", String.class);
+
+            String query = "INSERT INTO player_data (uuid, name, data, ip_address) VALUES (?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE data = ?, name = ?, ip_address = ?, last_updated = CURRENT_TIMESTAMP";
+
+            try (PreparedStatement stmt = sqlHandler.prepareStatement(query)) {
+                String uuidStr = getOriginalUniqueId().toString();
+
+                stmt.setString(1, uuidStr);
+                stmt.setString(2, getOriginalName());
+                stmt.setString(3, jsonData);
+                stmt.setString(4, ipAddress);
+                stmt.setString(5, jsonData);
+                stmt.setString(6, getOriginalName());
+                stmt.setString(7, ipAddress);
+
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            RpgCore.getInstance().getLogger().log(Level.SEVERE,
+                    "Failed to save player data for " + getOriginalName(), e);
+        }
     }
 
     /**
@@ -90,7 +172,7 @@ public class SunoPlayer {
      * @return The listener's current display name (nickname if set, otherwise original name)
      */
     public String getName() {
-        return playerData.get("suno.admin.nick.name", String.class, getOriginalName());
+        return playerData.get("suno.stuff.nick.name", String.class, getOriginalName());
     }
 
     /**
@@ -109,7 +191,7 @@ public class SunoPlayer {
      * @return The listener's current UUID (modified if nick system is active, otherwise original)
      */
     public UUID getUniqueId() {
-        return playerData.get("suno.admin.nick.uuid", UUID.class, getOriginalUniqueId());
+        return playerData.get("suno.stuff.nick.uuid", UUID.class, getOriginalUniqueId());
     }
 
     /**
@@ -128,7 +210,7 @@ public class SunoPlayer {
      * @return The listener's current group (modified if nick system is active, otherwise original)
      */
     public Group getGroup() {
-        return GroupHandler.getGroupById(playerData.get("suno.admin.nick.group", String.class, getOriginalGroup().id()));
+        return GroupHandler.getGroupById(playerData.get("suno.stuff.nick.group", String.class, getOriginalGroup().id()));
     }
 
     /**
@@ -155,7 +237,7 @@ public class SunoPlayer {
      * @return true if the listener is vanished, false otherwise
      */
     public boolean isVanished() {
-        return playerData.get("suno.admin.vanish", Boolean.class, false);
+        return playerData.get("suno.stuff.vanish", Boolean.class, false);
     }
 
     /**

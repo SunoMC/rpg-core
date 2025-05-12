@@ -39,6 +39,7 @@ public final class SunoMC {
             return;
         }
         onlinePlayers.add(player);
+        player.load();
     }
 
     /**
@@ -51,6 +52,7 @@ public final class SunoMC {
             return;
         }
         onlinePlayers.remove(player);
+        player.save();
     }
 
     /**
