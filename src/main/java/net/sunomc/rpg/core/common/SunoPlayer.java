@@ -41,7 +41,7 @@ public class SunoPlayer {
     private boolean firstTime;
 
 
-    public SunoPlayer(Player bukkitPlayer) {
+    public SunoPlayer(@NotNull Player bukkitPlayer) {
         this.bukkitPlayer = bukkitPlayer;
         this.playerData = new MinecraftData();
         firstTime = true;
@@ -256,10 +256,7 @@ public class SunoPlayer {
      * @return The listener's body yaw rotation in degrees default 0
      */
     public float getBodyYaw() {
-        if(bukkitPlayer instanceof LivingEntity entity) {
-            return entity.getBodyYaw();
-        }
-        return 0;
+        return bukkitPlayer.getBodyYaw();
     }
 
     /**

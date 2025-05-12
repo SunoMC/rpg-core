@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+import net.sunomc.rpg.core.common.SunoPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import net.sunomc.rpg.core.common.SunoPlayer;
 
 @Setter
 @Getter
@@ -20,7 +20,7 @@ public class SunoPlayerJoinEvent extends Event {
     private final Player bukkitPlayer;
     private final boolean firstTime;
 
-    public SunoPlayerJoinEvent(SunoPlayer player) {
+    public SunoPlayerJoinEvent(@NotNull SunoPlayer player) {
         this.player = player;
         this.bukkitPlayer = player.getServerPlayer();
         this.firstTime = player.isFirstTime();

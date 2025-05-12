@@ -21,20 +21,17 @@ public final class RpgCore extends JavaPlugin {
 
         Bukkit.getOnlinePlayers().forEach(player -> SunoMC.addPlayer(new SunoPlayer(player)));
 
-        GroupHandler groupHandler = new GroupHandler();
-        EventHandler eventHandler = new EventHandler(Bukkit.getPluginManager(), this);
-        PacketHandler packetHandler = new PacketHandler();
-        CommandHandler commandHandler = new CommandHandler(this);
-        TranslationHandler translationHandler = new TranslationHandler(null);
+        new GroupHandler().load();
+        new EventHandler(Bukkit.getPluginManager(), this).registerAll();
+        new PacketHandler();
+        new CommandHandler(this).registerAll();
+        new TranslationHandler().setup(null);
 
         try {
             TranslationHandler.loadLanguageFile("en-en");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        groupHandler.load();
-        eventHandler.registerAll();
-        commandHandler.registerAll();
     }
 
     @Override
