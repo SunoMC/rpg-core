@@ -1,4 +1,4 @@
-package net.sunomc.rpg.branding;
+package net.sunomc.rpg.core.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -24,9 +24,9 @@ public class MsgCommand implements CommandExecutor {
     private static final Component YOU_COMPONENT = Component.text("You").color(TextColor.color(0xe8c9f5));
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player bukkitPlayer)) {
-            sender.sendMessage("Only players can use this command."); // optional: übersetzbar machen
+            sender.sendMessage("Only players can use this command."); // TODO : übersetzbar machen
             return true;
         }
 
@@ -43,9 +43,9 @@ public class MsgCommand implements CommandExecutor {
         if (args.length < 2) {
             player.sendMessage(ChatIcon.Preset.ERROR,
                     Component.text("Suno"),
-                    Component.text(TranslationHandler
+                    TranslationHandler
                             .getTranslationFor("commands.general", "error.usage")
-                            .format("command", "/msg <player> <message>")),
+                            .formatToError("command", "/msg <player> <message>"),
                     false);
             return false;
         }
@@ -54,9 +54,9 @@ public class MsgCommand implements CommandExecutor {
         if (targetBukkit == null) {
             player.sendMessage(ChatIcon.Preset.ERROR,
                     Component.text("Suno"),
-                    Component.text(TranslationHandler
+                    TranslationHandler
                             .getTranslationFor("not-found", "player")
-                            .toRawString()),
+                            .toRawComponent(),
                     false);
             return false;
         }
@@ -65,9 +65,9 @@ public class MsgCommand implements CommandExecutor {
         if (target.equals(player)) {
             player.sendMessage(ChatIcon.Preset.ERROR,
                     Component.text("Suno"),
-                    Component.text(TranslationHandler
+                    TranslationHandler
                             .getTranslationFor("commands.msg", "error.self.message")
-                            .toRawString()),
+                            .toRawComponent(),
                     false);
             return false;
         }
@@ -81,9 +81,9 @@ public class MsgCommand implements CommandExecutor {
         if (args.length < 1) {
             player.sendMessage(ChatIcon.Preset.ERROR,
                     Component.text("SunoMC"),
-                    Component.text(TranslationHandler
-                            .getTranslationFor("commands.msg", "error.reply.usage")
-                            .format("command", "/r <message>")),
+                    TranslationHandler
+                            .getTranslationFor("commands.general", "error.usage")
+                            .formatToError("command", "/r <message>"),
                     false);
             return false;
         }
@@ -92,9 +92,9 @@ public class MsgCommand implements CommandExecutor {
         if (lastMessagerId == null) {
             player.sendMessage(ChatIcon.Preset.ERROR,
                     Component.text("SunoMC"),
-                    Component.text(TranslationHandler
+                    TranslationHandler
                             .getTranslationFor("commands.msg", "error.reply.none")
-                            .toRawString()),
+                            .toRawComponent(),
                     false);
             return false;
         }
@@ -103,10 +103,9 @@ public class MsgCommand implements CommandExecutor {
         if (targetBukkit == null) {
             player.sendMessage(ChatIcon.Preset.ERROR,
                     Component.text("SunoMC"),
-                    Component.text(TranslationHandler
-                                    .getTranslationFor("commands.msg", "error.reply.offline")
-                                    .toRawString())
-                            .color(TextColor.color(0xAAAAAA)),
+                    TranslationHandler
+                            .getTranslationFor("commands.msg", "error.reply.offline")
+                            .toRawComponent(),
                     false);
             return false;
         }
@@ -128,10 +127,10 @@ public class MsgCommand implements CommandExecutor {
         sender.sendMessage(outgoingToSender);
         recipient.sendMessage(outgoingToRecipient);
 
-        updateLastMessagers(sender, recipient);
+        updateLastChats(sender, recipient);
     }
 
-    private void updateLastMessagers(@NotNull SunoPlayer sender, @NotNull SunoPlayer recipient) {
+    private void updateLastChats(@NotNull SunoPlayer sender, @NotNull SunoPlayer recipient) {
         lastMessagers.put(sender.getUniqueId(), recipient.getUniqueId());
         lastMessagers.put(recipient.getUniqueId(), sender.getUniqueId());
     }
