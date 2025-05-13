@@ -16,12 +16,14 @@ import org.jetbrains.annotations.NotNull;
 public final class GroupHandler {
     private static Group defaultGroup;
     private static Set<Group> groups;
-    private final Scoreboard scoreboard;
+    private Scoreboard scoreboard;
     private static boolean loaded;
 
     private static final Group FALLBACK = new Group("fallback", "fallback", "", 0, true, Set.of());
 
-    public GroupHandler() {
+    private GroupHandler() {}
+
+    private void setup() {
         groups = new HashSet<>();
         scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
@@ -31,7 +33,7 @@ public final class GroupHandler {
     /**
      * Load all groups for the GroupHandler
      */
-    public void load() {
+    public static void load() {
         if(loaded) return;
 
         Set<Group> loadedGroups = new HashSet<>();

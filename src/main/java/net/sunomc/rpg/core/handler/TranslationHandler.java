@@ -1,6 +1,7 @@
 package net.sunomc.rpg.core.handler;
 
 import lombok.Getter;
+import net.sunomc.rpg.RpgCore;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * A handler class for managing and retrieving translations from language files.
@@ -31,13 +33,15 @@ public final class TranslationHandler {
     @Getter
     private static String langPath;
 
+    private TranslationHandler() {}
+
     /**
      * Initializes the translation handler with the specified language directory path.
      * If the provided path is null, the default directory (.lang) will be used.
      *
      * @param path The path to the directory containing language files
      */
-    public void setup(String path) {
+    public static void setup(String path) {
         TranslationHandler.langPath = path != null ? path : DEFAULT_LANG_DIR;
     }
 
@@ -100,34 +104,35 @@ public final class TranslationHandler {
      *         (returns the key as the translation if the path/key is not found)
      */
     private static @NotNull Translation getTranslationFromJson(String path, String key, Language lang) {
-        if (lang == null) return new Translation(key, key);
+        if (lang == null) return new Translation(path + "/" + key, key);
 
         try {
             JsonObject rootObject = loadLanguageFile(lang.id());
-            if (rootObject == null) return new Translation(key, key);
+            if (rootObject == null) return new Translation(path + "/" + key, key);
 
             JsonElement currentElement = rootObject;
             if (path != null && !path.isEmpty()) {
                 for (String part : path.split("\\.")) {
-                    if (!currentElement.isJsonObject()) return new Translation(key, key);
+                    if (!currentElement.isJsonObject()) return new Translation(path + "/" + key, key);
                     currentElement = currentElement.getAsJsonObject().get(part);
-                    if (currentElement == null || currentElement.isJsonNull()) return new Translation(key, key);
+                    if (currentElement == null || currentElement.isJsonNull()) return new Translation(path + "/" + key, key);
                 }
             }
 
-            if (!currentElement.isJsonObject()) return new Translation(key, key);
+            if (!currentElement.isJsonObject()) return new Translation(path + "/" + key, key);
             JsonElement valueElement = currentElement.getAsJsonObject().get(key);
-            if (valueElement == null || valueElement.isJsonNull()) return new Translation(key, key);
+            if (valueElement == null || valueElement.isJsonNull()) return new Translation(path + "/" + key, key);
 
             if (valueElement.isJsonPrimitive() && valueElement.getAsJsonPrimitive().isString()) {
-                return new Translation(key, valueElement.getAsString());
+                return new Translation(path + "/" + key, valueElement.getAsString());
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger logger = RpgCore.getInstance().getLogger();
+            logger.severe(e.getMessage());
         }
 
-        return new Translation(key, key);
+        return new Translation(path + "/" + key, key);
     }
 
     /**

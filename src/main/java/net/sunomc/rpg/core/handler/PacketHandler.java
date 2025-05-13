@@ -10,6 +10,7 @@ import com.comphenix.protocol.events.*;
 import net.sunomc.rpg.RpgCore;
 import net.sunomc.rpg.core.events.PacketReceiveEvent;
 import net.sunomc.rpg.core.events.PacketSendEvent;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.List;
 public final class PacketHandler extends PacketAdapter {
     private static final List<PacketType> SUPPORTED_PACKET_TYPES = getSupportedPacketTypes();
 
-    public PacketHandler() {
+    private PacketHandler() {
         super(RpgCore.getInstance(),
                 ListenerPriority.NORMAL,
                 SUPPORTED_PACKET_TYPES
@@ -28,15 +29,20 @@ public final class PacketHandler extends PacketAdapter {
         protocolManager.addPacketListener(this);
     }
 
+    @Contract(" -> new")
+    public static @NotNull PacketHandler setup() {
+        return new PacketHandler();
+    }
+
     @Override
-    public void onPacketReceiving(PacketEvent event) {
+    public void onPacketReceiving(@NotNull PacketEvent event) {
         if (!event.getPacket().getType().name().startsWith("Dynamic-")) {
             handlePacketEvent(event, true);
         }
     }
 
     @Override
-    public void onPacketSending(PacketEvent event) {
+    public void onPacketSending(@NotNull PacketEvent event) {
         if (!event.getPacket().getType().name().startsWith("Dynamic-")) {
             handlePacketEvent(event, false);
         }
@@ -52,7 +58,7 @@ public final class PacketHandler extends PacketAdapter {
         }
     }
 
-    private void executePacketEvent(PacketEvent originalEvent, boolean isReceiving) {
+    private void executePacketEvent(@NotNull PacketEvent originalEvent, boolean isReceiving) {
         PacketContainer packet = originalEvent.getPacket();
 
         if (isReceiving) {

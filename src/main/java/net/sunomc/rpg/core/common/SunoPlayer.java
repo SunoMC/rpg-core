@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -19,7 +18,6 @@ import net.sunomc.rpg.core.builder.ChatBuilder;
 import net.sunomc.rpg.core.data.Data;
 import net.sunomc.rpg.core.handler.SqlHandler;
 import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.sunomc.rpg.core.handler.GroupHandler;
@@ -40,13 +38,22 @@ public class SunoPlayer {
     @Getter
     private boolean firstTime;
 
-
+    /**
+     * Constructs a new SunoPlayer instance wrapping a Bukkit Player.
+     *
+     * @param bukkitPlayer the Bukkit Player instance to wrap (must not be null)
+     * @throws IllegalArgumentException if bukkitPlayer is null
+     */
     public SunoPlayer(@NotNull Player bukkitPlayer) {
         this.bukkitPlayer = bukkitPlayer;
         this.playerData = new MinecraftData();
         firstTime = true;
     }
 
+    /**
+     * Initializes default player data with current timestamp, IP address,
+     * default group, and basic statistics.
+     */
     public void initializeDefaultData() {
         LocalDateTime time = LocalDateTime.now();
         playerData.set("network.ip_address", Objects.requireNonNull(bukkitPlayer.getAddress()).getAddress().getHostAddress());
@@ -59,9 +66,15 @@ public class SunoPlayer {
         playerData.set("suno.stats.login.last", time);
     }
 
+    /**
+     * Loads player data from the database. If no existing data is found,
+     * initializes default data. Handles database connection and table creation.
+     *
+     * @throws SQLException if there's an error accessing the database
+     */
     public void load() {
         try {
-            SqlHandler sqlHandler = SqlHandler.getInstance();
+            SqlHandler sqlHandler = net.sunomc.rpg.core.handler.SqlHandler.getInstance();
 
             sqlHandler.createTable("player_data",
                     "uuid VARCHAR(36) PRIMARY KEY, " +
@@ -95,9 +108,15 @@ public class SunoPlayer {
         }
     }
 
+    /**
+     * Saves the player's data to the database. Updates existing records or inserts new ones.
+     * Includes player UUID, name, JSON data, IP address, and timestamps.
+     *
+     * @throws SQLException if there's an error accessing the database
+     */
     public void save() {
         try {
-            SqlHandler sqlHandler = SqlHandler.getInstance();
+            SqlHandler sqlHandler = net.sunomc.rpg.core.handler.SqlHandler.getInstance();
 
             String jsonData = this.playerData.to(Data.Type.JSON);
             String ipAddress = getData("network.ip_address", String.class);
@@ -322,11 +341,22 @@ public class SunoPlayer {
         sendMessage(ChatIcon.Preset.CHAT, sender, message);
     }
 
-    // TODO : do docs
+    /**
+     * Sends a message component to the player.
+     *
+     * @param message the message component to send (can be formatted text, etc.)
+     */
     public void sendMessage(Component message) {
         bukkitPlayer.sendMessage(message);
     }
 
+    /**
+     * Compares this SunoPlayer with another object for equality.
+     * Two SunoPlayers are considered equal if they have the same UUID.
+     *
+     * @param obj the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -342,6 +372,11 @@ public class SunoPlayer {
         return this.getUniqueId().equals(sunoPlayer.getUniqueId());
     }
 
+    /**
+     * Returns a hash code value for this SunoPlayer based on the player's UUID.
+     *
+     * @return a hash code value for this object
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getUniqueId());

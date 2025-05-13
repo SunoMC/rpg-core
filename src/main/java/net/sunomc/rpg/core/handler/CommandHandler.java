@@ -4,17 +4,16 @@ import java.util.Objects;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.sunomc.rpg.branding.MsgCommand;
+import net.sunomc.rpg.core.commands.MsgCommand;
 
 
 public final class CommandHandler {
-    private JavaPlugin plugin;
+    private static JavaPlugin plugin;
 
-    public CommandHandler(JavaPlugin javaPlugin) {
+    private CommandHandler() {}
+
+    public static boolean registerAll(JavaPlugin javaPlugin) {
         plugin = javaPlugin;
-    }
-
-    public boolean registerAll() {
         try {
             Objects.requireNonNull(plugin.getCommand("msg")).setExecutor(new MsgCommand());
             Objects.requireNonNull(plugin.getCommand("r")).setExecutor(new MsgCommand());
