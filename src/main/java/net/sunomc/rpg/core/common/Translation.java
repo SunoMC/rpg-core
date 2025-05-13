@@ -24,9 +24,9 @@ public record Translation(
         String value) {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("%([a-zA-Z0-9_]+)%");
-    private static final TextColor DEFAULT_TEXT_COLOR = TextColor.color(0xAAAAAA); // Grau
-    private static final int DEFAULT_REPLACEMENT_COLOR = 0x55FFFF; // Hellblau/Cyan
-    private static final int ERROR_REPLACEMENT_COLOR = 0xFF0000; // Hellblau/Cyan
+    private static final TextColor DEFAULT_TEXT_COLOR = TextColor.color(0xAAAAAA); // Gray
+    private static final int DEFAULT_REPLACEMENT_COLOR = 0x55FFFF; // Cyan
+    private static final int ERROR_REPLACEMENT_COLOR = 0xED727C; // Red soft
 
     /**
      * Returns the raw translated value without any placeholder processing.
