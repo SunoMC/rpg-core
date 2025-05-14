@@ -1,7 +1,8 @@
 package net.sunomc.rpg.core.handler;
 
+import net.sunomc.rpg.branding.MotdBranding;
 import net.sunomc.rpg.core.listener.PlayerListener;
-import net.sunomc.rpg.branding.ChatManager;
+import net.sunomc.rpg.branding.ChatBranding;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,8 +18,9 @@ public final class EventHandler {
 
         try {
             manager.registerEvents(new PlayerListener(), plugin);
-            manager.registerEvents(new ChatManager(), plugin);
-        } catch (Exception e) {
+            manager.registerEvents(new ChatBranding(), plugin);
+            manager.registerEvents(new MotdBranding(), plugin);
+        } catch (Exception ignored) {
         }
     }
 

@@ -64,12 +64,12 @@ public class MinecraftData extends Data {
 
         try {
             return switch (type) {
-                case Class<?> locClass when locClass.isAssignableFrom(Location.class) -> (T) getLocation(path);
-                case Class<?> itemClass when itemClass.isAssignableFrom(ItemStack.class) -> (T) getItemStack(path);
-                case Class<?> invClass when invClass.isAssignableFrom(Inventory.class) -> (T) getInventory(path);
-                case Class<?> worldClass when worldClass.isAssignableFrom(World.class) -> (T) getWorld(path);
-                case Class<?> blockDataClass when blockDataClass.isAssignableFrom(BlockData.class) -> (T) getBlockData(path);
-                case Class<?> componentClass when componentClass.isAssignableFrom(Component.class) -> (T) getComponent(path);
+                case Class<?> caseClass when caseClass.isAssignableFrom(Location.class) -> (T) getLocation(path);
+                case Class<?> caseClass when caseClass.isAssignableFrom(ItemStack.class) -> (T) getItemStack(path);
+                case Class<?> caseClass when caseClass.isAssignableFrom(Inventory.class) -> (T) getInventory(path);
+                case Class<?> caseClass when caseClass.isAssignableFrom(World.class) -> (T) getWorld(path);
+                case Class<?> caseClass when caseClass.isAssignableFrom(BlockData.class) -> (T) getBlockData(path);
+                case Class<?> caseClass when caseClass.isAssignableFrom(Component.class) -> (T) getComponent(path);
                 default -> super.get(path, type, defaultValue);
             };
         } catch (Exception e) {

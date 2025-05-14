@@ -24,14 +24,29 @@ import net.sunomc.rpg.core.events.PacketSendEvent;
 import net.sunomc.rpg.SunoMC;
 import net.sunomc.rpg.core.events.PacketReceiveEvent;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+
 public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
-        SunoPlayer sunoPlayer = new SunoPlayer(event.getPlayer());
-        SunoMC.addPlayer(sunoPlayer);
+        SunoPlayer player = new SunoPlayer(event.getPlayer());
+        SunoMC.addPlayer(player);
 
-        RpgCore.getInstance().getServer().getPluginManager().callEvent(new SunoPlayerJoinEvent(sunoPlayer));
+        String ip = Objects.requireNonNull(player.getServerPlayer().getAddress()).getAddress().getHostAddress();
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        int loginCount = player.getData("suno.stats.login.count", Integer.class, 0);
+
+        player.setData("network.ip_address", ip);
+        player.setData("network.login.ip.last", ip);
+        player.setData("network.login.ip." + time, ip);
+
+        player.setData("suno.stats.login.count", loginCount);
+        player.setData("suno.stats.login.last", time);
+
+        RpgCore.getInstance().getServer().getPluginManager().callEvent(new SunoPlayerJoinEvent(player));
 
     }
 

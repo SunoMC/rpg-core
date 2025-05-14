@@ -15,7 +15,7 @@ import net.sunomc.rpg.core.common.ChatIcon;
 import net.sunomc.rpg.core.events.SunoChatEvent;
 import net.sunomc.rpg.core.common.SunoPlayer;
 
-public class ChatManager implements Listener {
+public class ChatBranding implements Listener {
 
     @EventHandler
     public void onChatEvent(AsyncChatEvent event) {

@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import org.bukkit.Bukkit;
@@ -20,13 +22,27 @@ import net.sunomc.rpg.core.common.SunoPlayer;
  */
 public final class SunoMC {
 
+    public enum ServerStatus {
+        OFFLINE,
+        MAINTENANCE,
+        ONLINE,
+    }
+
+
     /**
      * A set containing all currently online SunoPlayer instances.
      */
-    public static Set<SunoPlayer> onlinePlayers;
+    private static final Set<SunoPlayer> onlinePlayers;
+
+    /**
+     * Save Server for Status and name
+     */
+    @Getter @Setter
+    private static ServerStatus status;
 
     static {
         onlinePlayers = new HashSet<>();
+        status = ServerStatus.OFFLINE;
     }
 
     /**

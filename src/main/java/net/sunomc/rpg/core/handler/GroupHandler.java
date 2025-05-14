@@ -40,7 +40,7 @@ public final class GroupHandler {
         // Set to DB later
         loadedGroups.add(new Group("admin", "AdminToll", "", 100, false, Set.of("suno.admin.*")));
         loadedGroups.add(new Group("mod", "Mod der Beste", "", 50, false, Set.of("suno.mod.*")));
-        loadedGroups.add(new Group("listener", "listener", "", 0, true, Set.of("suno.listener.*")));
+        loadedGroups.add(new Group("player", "Player und so", "", 0, true, Set.of("suno.listener.*")));
 
         defaultGroup = loadedGroups.stream()
                 .filter(Group::isDefault)

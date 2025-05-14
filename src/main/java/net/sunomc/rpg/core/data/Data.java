@@ -1,5 +1,9 @@
 package net.sunomc.rpg.core.data;
 
+import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -21,7 +25,7 @@ import org.yaml.snakeyaml.Yaml;
  * Supports JSON/YAML serialization and automatic type conversion.
  */
 public class Data {
-    private final Map<String, Object> data = new HashMap<>();
+    protected final Map<String, Object> data = new HashMap<>();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final Yaml yaml = new Yaml();
 
@@ -41,6 +45,9 @@ public class Data {
 
         switch (value) {
             case UUID uuid -> setDefault(path, uuid.toString());
+            case LocalDate date -> setDefault(path, date.toString());
+            case LocalTime time -> setDefault(path, time.toString());
+            case LocalDateTime dateTime -> setDefault(path, dateTime.toString());
             case null -> remove(path);
             default -> setDefault(path, value);
         }
@@ -62,7 +69,10 @@ public class Data {
 
         try {
             return switch (type) {
-                case Class<?> uuidClass when uuidClass.isAssignableFrom(UUID.class) -> (T) UUID.fromString((String) value);
+                case Class<?> caseClass when caseClass.isAssignableFrom(LocalDate.class) -> (T) LocalDate.parse((String) value);
+                case Class<?> caseClass when caseClass.isAssignableFrom(LocalTime.class) -> (T) LocalTime.parse((String) value);
+                case Class<?> caseClass when caseClass.isAssignableFrom(LocalDateTime.class) -> (T) LocalDateTime.parse((String) value);
+                case Class<?> caseClass when caseClass.isAssignableFrom(UUID.class) -> (T) UUID.fromString((String) value);
                 default -> type.isInstance(value)
                         ? (T) value
                         : defaultValue;
@@ -117,7 +127,7 @@ public class Data {
      * @param type The output format type (JSON or YAML)
      * @return String representation of the data
      */
-    public String to(Type type) {
+    public String to(@NotNull Type type) {
         return switch (type) {
             case JSON -> gson.toJson(data);
             case YAML -> yaml.dump(data);
@@ -166,33 +176,42 @@ public class Data {
     /**
      * Generates a Data object from a file string in the specified format.
      *
+     * @param <T> The type of Data to return (must extend Data)
      * @param fileString The file content as a string
      * @param type The format type of the input (JSON or YAML)
-     * @return A new Data object containing the parsed data
+     * @param dataClass The class of the Data type to instantiate
+     * @return A new Data object (or subclass) containing the parsed data
      */
-    public static Data generateFrom(String fileString, Type type) {
-        Data data = new Data();
-        
-        switch (type) {
-            case JSON -> //noinspection unchecked
-                    data.data.putAll(gson.fromJson(fileString, Map.class));
-            case YAML -> data.data.putAll(yaml.load(fileString));
+    public static @NotNull <T extends Data> T generateFrom(String fileString, @NotNull Type type, @NotNull Class<T> dataClass) {
+        try {
+            T data = dataClass.getDeclaredConstructor().newInstance();
+
+            switch (type) {
+                case JSON -> //noinspection unchecked
+                        data.data.putAll(gson.fromJson(fileString, Map.class));
+                case YAML -> data.data.putAll(yaml.load(fileString));
+            }
+
+            return data;
+        } catch (InstantiationException | IllegalAccessException |
+                 NoSuchMethodException | InvocationTargetException e) {
+            throw new RuntimeException("Failed to create Data instance", e);
         }
-        
-        return data;
     }
 
     /**
      * Generates a Data object from a file in the specified format.
      *
+     * @param <T> The type of Data to return (must extend Data)
      * @param filePath The path to the file to load
      * @param type The format type of the file (JSON or YAML)
-     * @return A new Data object containing the parsed data
+     * @param dataClass The class of the Data type to instantiate
+     * @return A new Data object (or subclass) containing the parsed data
      * @throws IOException If there's an error reading the file
      */
-    public static Data generateFromFile(String filePath, Type type) throws IOException {
+    public static @NotNull <T extends Data> T generateFromFile(String filePath, Type type, Class<T> dataClass) throws IOException {
         String content = new String(Files.readAllBytes(new File(filePath).toPath()));
-        return generateFrom(content, type);
+        return generateFrom(content, type, dataClass);
     }
 
     /**

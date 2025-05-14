@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -55,15 +56,17 @@ public class SunoPlayer {
      * default group, and basic statistics.
      */
     public void initializeDefaultData() {
-        LocalDateTime time = LocalDateTime.now();
-        playerData.set("network.ip_address", Objects.requireNonNull(bukkitPlayer.getAddress()).getAddress().getHostAddress());
-        playerData.set("network.ip.first_join", time);
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        String ip = Objects.requireNonNull(bukkitPlayer.getAddress()).getAddress().getHostAddress();
+        playerData.set("network.ip_address", ip);
+        playerData.set("network.login.ip.last", ip);
+        playerData.set("network.login.ip." + time, ip);
 
         playerData.set("suno.group.id", GroupHandler.getDefault().id());
         
         playerData.set("suno.stats.playtime", 0L);
-        playerData.set("suno.stats.login.count", 1);
-        playerData.set("suno.stats.login.last", time);
+        playerData.set("suno.stats.join.count", 1);
+        playerData.set("suno.stats.join.last", time);
     }
 
     /**
@@ -93,7 +96,7 @@ public class SunoPlayer {
                     String jsonData = rs.getString("data");
                     Timestamp firstJoin = rs.getTimestamp("first_join");
 
-                    playerData = (MinecraftData) Data.generateFrom(jsonData, Data.Type.JSON);
+                    playerData = MinecraftData.generateFrom(jsonData, Data.Type.JSON, MinecraftData.class);
 
                     playerData.set("network.ip_address", Objects.requireNonNull(bukkitPlayer.getAddress()).getAddress().getHostAddress());
                     playerData.set("network.first_join", firstJoin != null ? firstJoin.toLocalDateTime() : null);

@@ -35,6 +35,7 @@ public final class RpgCore extends JavaPlugin {
     public void onLoad() {
         Language.of("en-en.json");
         Bukkit.getOnlinePlayers().forEach(player -> SunoMC.addPlayer(new SunoPlayer(player)));
+        SunoMC.setStatus(SunoMC.ServerStatus.ONLINE); // TODO : logik hier für online oder wartung
     }
 
     @Override

@@ -30,22 +30,18 @@ public final class PacketHandler extends PacketAdapter {
     }
 
     @Contract(" -> new")
-    public static @NotNull PacketHandler setup() {
-        return new PacketHandler();
+    public static void setup() {
+        new PacketHandler();
     }
 
     @Override
     public void onPacketReceiving(@NotNull PacketEvent event) {
-        if (!event.getPacket().getType().name().startsWith("Dynamic-")) {
-            handlePacketEvent(event, true);
-        }
+        handlePacketEvent(event, true);
     }
 
     @Override
     public void onPacketSending(@NotNull PacketEvent event) {
-        if (!event.getPacket().getType().name().startsWith("Dynamic-")) {
-            handlePacketEvent(event, false);
-        }
+        handlePacketEvent(event, false);
     }
 
     private void handlePacketEvent(PacketEvent originalEvent, boolean isReceiving) {
