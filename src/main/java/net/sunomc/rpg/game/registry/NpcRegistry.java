@@ -15,7 +15,7 @@ import java.util.Optional;
  * Provides thread-safe operations for adding, removing, and querying NPCs by their unique IDs.
  */
 public final class NpcRegistry {
-    private final Map<String, Character> npcMap = new HashMap<>();
+    private static final Map<String, Character> npcMap = new HashMap<>();
 
     /**
      * Registers a new NPC with a unique identifier.
@@ -23,7 +23,7 @@ public final class NpcRegistry {
      * @param npc The {@link Character} instance to register.
      * @throws IllegalArgumentException if the NPC ID is already in use.
      */
-    public void registerNpc(Character npc) {
+    public static void registerNpc(Character npc) {
         if (npcMap.containsKey(npc.id())) {
             throw new IllegalArgumentException("NPC ID '" + npc.id() + "' is already registered.");
         }
@@ -36,8 +36,8 @@ public final class NpcRegistry {
      * @param npcId The ID of the NPC to remove.
      * @return The removed {@link Character}, or empty if the ID was not found.
      */
-    public @NotNull Optional<Character> unregisterNpc(String npcId) {
-        return Optional.ofNullable(npcMap.remove(npcId));
+    public static Character unregisterNpc(String npcId) {
+        return npcMap.remove(npcId);
     }
 
     /**
@@ -46,8 +46,8 @@ public final class NpcRegistry {
      * @param npcId The ID of the NPC to fetch.
      * @return An {@link Optional} containing the NPC, or empty if not found.
      */
-    public @NotNull Optional<Character> getNpc(String npcId) {
-        return Optional.ofNullable(npcMap.get(npcId));
+    public static @NotNull Character getNpc(String npcId) {
+        return npcMap.get(npcId);
     }
 
     /**
@@ -57,7 +57,7 @@ public final class NpcRegistry {
      * @return An unmodifiable {@link Map} of NPC IDs to their {@link Character} instances.
      */
     @Contract(pure = true)
-    public @NotNull @UnmodifiableView Map<String, Character> getAllNPCs() {
+    public static @NotNull @UnmodifiableView Map<String, Character> getAllNPCs() {
         return Collections.unmodifiableMap(npcMap);
     }
 
@@ -67,14 +67,14 @@ public final class NpcRegistry {
      * @param npcId The ID to check.
      * @return True if the NPC is registered, false otherwise.
      */
-    public boolean hasNpc(String npcId) {
+    public static boolean hasNpc(String npcId) {
         return npcMap.containsKey(npcId);
     }
 
     /**
      * Clears all registered NPCs from the registry.
      */
-    public void clear() {
+    public static void clear() {
         npcMap.clear();
     }
 }
