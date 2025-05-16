@@ -61,12 +61,16 @@ public class Dialog {
          */
         ONE_BEFORE_NEXT,
         /**
+         * No next logik or checks need a custom added next button
+         */
+        CUSTOM_NEXT,
+        /**
          * Actions are optional, dialog can progress without completion
          */
         OPTIONAL
     }
 
-    public record Action(String title, String actionId) {
+    public record Action(String title, String actionId) { // TODO : move to extra class Action and add Consumer for action logik
         public Action {
             Objects.requireNonNull(title, "Title cannot be null");
             Objects.requireNonNull(actionId, "Action ID cannot be null");
