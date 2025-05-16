@@ -14,7 +14,8 @@ import java.util.Map;
 public record Language(
         String id,
         String path,
-        String name) {
+        String name
+) {
     private static final String DEFAULT_LANG_PATH = "./lang";
     private static final Map<String, Language> langCache = new HashMap<>();
 
