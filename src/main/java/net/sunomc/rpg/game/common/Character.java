@@ -9,29 +9,29 @@ public record Character(
         int imgSpace
 ) {
 
-    public static final String NPC_CHAR = "\uC000";
+    public static final int NPC_CHAR = 0xC000;
 
     // TODO : npc logik
 
     @Getter
     public enum Mood {
-        HAPPY(0),
+        NEUTRAL(0),
         SAD(1),
         ANGRY(2),
         SCARED(3),
-        NEUTRAL(4),
+        HAPPY(4),
         CONFUSED(5),
         BORED(6),
         EXCITED(7);
 
-        public final int id;
+        private final int id;
 
         Mood(int id) {
             this.id = id;
         }
     }
 
-    public static String getNpcChar() {
+    public static int getNpcChar() {
         return NPC_CHAR;
     }
 

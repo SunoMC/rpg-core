@@ -1,14 +1,16 @@
 package net.sunomc.rpg.core.builder;
 
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.jetbrains.annotations.NotNull;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
-
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.sunomc.rpg.core.common.ChatIcon;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -25,7 +27,7 @@ public class ChatBuilder {
      * Builds a clickable listener name component.
      *
      * @param nameComponent The component representing the listener's name
-     * @param suggestMsg Whether to make the name clickable for sending messages
+     * @param suggestMsg    Whether to make the name clickable for sending messages
      * @return Component with the listener name, optionally with click/hover events
      */
     public static Component buildClickablePlayerName(Component nameComponent,
@@ -60,10 +62,10 @@ public class ChatBuilder {
     /**
      * Builds a formatted message with icon, sender, and message content.
      *
-     * @param icon The chat icon to display
+     * @param icon            The chat icon to display
      * @param senderComponent The component representing the message sender
-     * @param message The message content
-     * @param msg Whether the sender name should be clickable for messaging
+     * @param message         The message content
+     * @param msg             Whether the sender name should be clickable for messaging
      * @return Fully formatted message component
      */
     public static @NotNull Component buildMessage(@NotNull ChatIcon icon,
@@ -82,7 +84,7 @@ public class ChatBuilder {
      * Builds a standard chat message with default settings.
      *
      * @param senderComponent The component representing the message sender
-     * @param message The message content
+     * @param message         The message content
      * @return Formatted chat message component
      */
     public static @NotNull Component buildChatMessage(Component senderComponent,
@@ -94,8 +96,8 @@ public class ChatBuilder {
      * Builds a standard chat message with configurable messaging.
      *
      * @param senderComponent The component representing the message sender
-     * @param message The message content
-     * @param msg Whether the sender name should be clickable for messaging
+     * @param message         The message content
+     * @param msg             Whether the sender name should be clickable for messaging
      * @return Formatted chat message component
      */
     public static @NotNull Component buildChatMessage(Component senderComponent,
@@ -107,9 +109,9 @@ public class ChatBuilder {
     /**
      * Builds a private message between two players.
      *
-     * @param senderComponent The component representing the message sender
+     * @param senderComponent    The component representing the message sender
      * @param recipientComponent The component representing the message recipient
-     * @param message The message content
+     * @param message            The message content
      * @return Formatted private message component
      */
     public static @NotNull Component buildPrivateMessage(Component senderComponent,
@@ -125,4 +127,47 @@ public class ChatBuilder {
                 .append(Component.text(" » ", ARROW_COLOR))
                 .append(message);
     }
+
+    public static @NotNull List<String> splitTextIntoLines(@NotNull String text, int maxLineLength) {
+        List<String> lines = new ArrayList<>();
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : text.split(" ")) {
+            if (currentLine.length() + word.length() + 1 > maxLineLength) {
+                if (!currentLine.isEmpty()) {
+                    lines.add(currentLine.toString());
+                    currentLine.setLength(0);
+                }
+            }
+
+            if (!currentLine.isEmpty()) {
+                currentLine.append(" ");
+            }
+
+            currentLine.append(word);
+        }
+
+        if (!currentLine.isEmpty()) {
+            lines.add(currentLine.toString());
+        }
+
+        return lines;
+    }
+
+
+    public static @NotNull List<Component> splitComponentIntoLines(@NotNull Component component, int maxLineLength) {
+        String plainText = PlainTextComponentSerializer.plainText().serialize(component);
+        List<String> lines = splitTextIntoLines(plainText, maxLineLength);
+
+        Style style = component.style();
+        List<Component> result = new ArrayList<>();
+
+        for (String line : lines) {
+            result.add(Component.text(line).style(style));
+        }
+
+        return result;
+    }
+
+
 }

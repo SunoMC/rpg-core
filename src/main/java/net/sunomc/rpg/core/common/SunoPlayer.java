@@ -1,29 +1,32 @@
 package net.sunomc.rpg.core.common;
 
+import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.sunomc.rpg.RpgCore;
+import net.sunomc.rpg.SunoMC;
+import net.sunomc.rpg.core.builder.ChatBuilder;
+import net.sunomc.rpg.core.data.Data;
+import net.sunomc.rpg.core.data.MinecraftData;
+import net.sunomc.rpg.core.handler.GroupHandler;
+import net.sunomc.rpg.core.handler.SqlHandler;
+import net.sunomc.rpg.game.dialog.Dialog;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
-
-import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.sunomc.rpg.RpgCore;
-import net.sunomc.rpg.SunoMC;
-import net.sunomc.rpg.core.builder.ChatBuilder;
-import net.sunomc.rpg.core.data.Data;
-import net.sunomc.rpg.core.handler.SqlHandler;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
-import net.sunomc.rpg.core.handler.GroupHandler;
-import net.sunomc.rpg.core.data.MinecraftData;
-import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -35,6 +38,9 @@ import org.jetbrains.annotations.NotNull;
 public class SunoPlayer {
     private final Player bukkitPlayer;
     private MinecraftData playerData;
+
+    private Dialog activeDialog;
+    private List<Component> toSendMessages;
 
     @Getter
     private boolean firstTime;
@@ -48,6 +54,7 @@ public class SunoPlayer {
     public SunoPlayer(@NotNull Player bukkitPlayer) {
         this.bukkitPlayer = bukkitPlayer;
         this.playerData = new MinecraftData();
+        this.toSendMessages = new ArrayList<>();
         firstTime = true;
     }
 
@@ -63,7 +70,7 @@ public class SunoPlayer {
         playerData.set("network.login.ip." + time, ip);
 
         playerData.set("suno.group.id", GroupHandler.getDefault().id());
-        
+
         playerData.set("suno.stats.playtime", 0L);
         playerData.set("suno.stats.join.count", 1);
         playerData.set("suno.stats.join.last", time);
@@ -148,7 +155,8 @@ public class SunoPlayer {
 
     /**
      * Sets data at the specified path
-     * @param path Path to the data (e.g. "info.stats.strength")
+     *
+     * @param path  Path to the data (e.g. "info.stats.strength")
      * @param value Value to store
      */
     public void setData(String path, Object value) {
@@ -157,9 +165,10 @@ public class SunoPlayer {
 
     /**
      * Gets data from the specified path
+     *
      * @param path Path to the data
      * @param type Class type to cast the result to
-     * @param <T> Type parameter
+     * @param <T>  Type parameter
      * @return The value at the specified path, cast to the requested type, or null if not found
      */
     public <T> T getData(String path, Class<T> type) {
@@ -168,10 +177,11 @@ public class SunoPlayer {
 
     /**
      * Gets data from the specified path with a default value if not found or not of correct type
-     * @param path Path to the data
-     * @param type Class type to cast the result to
+     *
+     * @param path         Path to the data
+     * @param type         Class type to cast the result to
      * @param defaultValue Default value to return if path not found or type doesn't match
-     * @param <T> Type parameter
+     * @param <T>          Type parameter
      * @return The value at the specified path, cast to the requested type, or the default value if not found or wrong type
      */
     public <T> T getData(String path, Class<T> type, T defaultValue) {
@@ -284,9 +294,9 @@ public class SunoPlayer {
     /**
      * Sends a formatted message to the listener with specified message type.
      *
-     * @param type The type of message which determines the icon and styling
-     * @param sender The component representing the message sender
-     * @param message The content of the message to send
+     * @param type     The type of message which determines the icon and styling
+     * @param sender   The component representing the message sender
+     * @param message  The content of the message to send
      * @param hoverMsg Whether the sender name should be clickable for messaging
      */
     public void sendMessage(@NotNull ChatIcon.Preset type,
@@ -299,9 +309,9 @@ public class SunoPlayer {
     /**
      * Sends a fully customizable formatted message to the listener.
      *
-     * @param icon The ChatIcon to display with the message
-     * @param sender The component representing the message sender
-     * @param message The content of the message to send
+     * @param icon     The ChatIcon to display with the message
+     * @param sender   The component representing the message sender
+     * @param message  The content of the message to send
      * @param hoverMsg Whether the sender name should be clickable for messaging
      */
     public void sendMessage(ChatIcon icon,
@@ -314,8 +324,9 @@ public class SunoPlayer {
     /**
      * Sends a standard chat message to the listener.
      * Automatically uses the sender's name and enables message hover/click functionality.
-     * @param type The type of message which determines the icon and styling
-     * @param sender The Player object representing the message sender
+     *
+     * @param type    The type of message which determines the icon and styling
+     * @param sender  The Player object representing the message sender
      * @param message The content of the message to send
      */
     public void sendMessage(ChatIcon.Preset type,
@@ -336,12 +347,54 @@ public class SunoPlayer {
      * Sends a standard chat message to the listener.
      * Automatically uses the sender's name and enables message hover/click functionality.
      *
-     * @param sender The Player object representing the message sender
+     * @param sender  The Player object representing the message sender
      * @param message The content of the message to send
      */
     public void sendMessage(Player sender,
                             Component message) {
-        sendMessage(ChatIcon.Preset.CHAT, sender, message);
+        Component senderName = Component.text(SunoMC.getPlayer(sender).getName());
+        boolean msg = true;
+
+        if (sender.getUniqueId().equals(bukkitPlayer.getUniqueId())) {
+            senderName = Component.text("You").color(TextColor.color(0xe8c9f5));
+            msg = false;
+        }
+
+        sendMessage(ChatBuilder.buildMessage(ChatIcon.Preset.CHAT.asIcon(), senderName, message, msg));
+    }
+
+
+    public void sendDialog(@NotNull Dialog dialog) {
+        this.activeDialog = dialog;
+        List<Component> lines = ChatBuilder.splitComponentIntoLines(dialog.getText(), 25);
+
+        String imagePlaceholder = "      ";
+
+        Component messages = Component.empty();
+
+        for (int i = 0; i < lines.size(); i++) {
+            Component line = lines.get(i);
+
+            Component message = (i == lines.size() - 1)
+                    ? Component.text(imagePlaceholder)
+                    : Component.text(imagePlaceholder).append(line.color(NamedTextColor.GRAY));
+
+            bukkitPlayer.sendMessage(messages);
+        }
+
+    }
+
+    public void exitDialog() {
+        // more logik hier
+        this.activeDialog = null;
+    }
+
+    public void sendMessage(Component message) {
+        if (activeDialog != null) {
+            bukkitPlayer.sendMessage(message);
+            return;
+        }
+        toSendMessages.add(message);
     }
 
     /**
@@ -349,7 +402,7 @@ public class SunoPlayer {
      *
      * @param message the message component to send (can be formatted text, etc.)
      */
-    public void sendMessage(Component message) {
+    public void sendRawMessage(Component message) {
         bukkitPlayer.sendMessage(message);
     }
 

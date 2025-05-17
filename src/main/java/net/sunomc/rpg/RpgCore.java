@@ -1,7 +1,6 @@
 package net.sunomc.rpg;
 
 import lombok.Getter;
-
 import net.sunomc.rpg.core.common.Language;
 import net.sunomc.rpg.core.common.SunoPlayer;
 import net.sunomc.rpg.core.handler.*;

@@ -7,9 +7,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 public class Dialog {
@@ -17,7 +18,7 @@ public class Dialog {
     private final Character.Mood mood;
     private Component text;
     private Dialog next;
-    private List<Action> actions;
+    private Set<Action> actions;
     private Rule actionRule = Rule.ALL_BEFORE_NEXT; // Default rule
 
     private Dialog(Character character, Character.Mood mood) {
@@ -36,12 +37,17 @@ public class Dialog {
     }
 
     public Dialog addAction(Action action) {
-        if (actions == null) actions = new ArrayList<>();
+        if (actions == null) actions = new HashSet<>();
         this.actions.add(Objects.requireNonNull(action, "Action cannot be null"));
         return this;
     }
 
     public Dialog next(@Nullable Dialog next) {
+        this.next = next;
+        return this;
+    }
+
+    public Dialog next(Action action, Dialog next) {
         this.next = next;
         return this;
     }
@@ -61,19 +67,18 @@ public class Dialog {
          */
         ONE_BEFORE_NEXT,
         /**
-         * No next logik or checks need a custom added next button
-         */
-        CUSTOM_NEXT,
-        /**
          * Actions are optional, dialog can progress without completion
          */
         OPTIONAL
     }
 
-    public record Action(String title, String actionId) { // TODO : move to extra class Action and add Consumer for action logik
-        public Action {
-            Objects.requireNonNull(title, "Title cannot be null");
-            Objects.requireNonNull(actionId, "Action ID cannot be null");
-        }
+    public Set<Action> getActions() {
+        return Collections.unmodifiableSet(actions);
+    }
+
+    public char getImgChar() {
+        int base = Character.getNpcChar();
+        int offset = character.imgSpace() + mood.getId();
+        return (char) (base + offset);
     }
 }

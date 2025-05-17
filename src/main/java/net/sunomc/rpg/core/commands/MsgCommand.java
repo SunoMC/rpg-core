@@ -3,10 +3,12 @@ package net.sunomc.rpg.core.commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.sunomc.rpg.SunoMC;
+import net.sunomc.rpg.core.builder.ChatBuilder;
 import net.sunomc.rpg.core.common.ChatIcon;
 import net.sunomc.rpg.core.common.SunoPlayer;
-import net.sunomc.rpg.core.builder.ChatBuilder;
 import net.sunomc.rpg.core.handler.TranslationHandler;
+import net.sunomc.rpg.game.common.Character;
+import net.sunomc.rpg.game.dialog.Dialog;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,6 +33,14 @@ public class MsgCommand implements CommandExecutor {
         }
 
         SunoPlayer player = SunoMC.getPlayer(bukkitPlayer);
+
+        Dialog dialog = Dialog.from(
+                new net.sunomc.rpg.game.common.Character(Component.text("hallo"), "", 0),
+                Character.Mood.BORED).text(Component.text("Test text das man sehen kann ob das jetz geht free hahhahh"));
+
+        player.sendDialog(dialog);
+
+        player.sendRawMessage(dialog.getText());
 
         return switch (command.getName().toLowerCase()) {
             case "msg" -> handleMessageCommand(player, args);
@@ -124,8 +134,8 @@ public class MsgCommand implements CommandExecutor {
         Component outgoingToSender = ChatBuilder.buildPrivateMessage(YOU_COMPONENT, recipientName, messageComponent, true);
         Component outgoingToRecipient = ChatBuilder.buildPrivateMessage(senderName, YOU_COMPONENT, messageComponent, false);
 
-        sender.sendMessage(outgoingToSender);
-        recipient.sendMessage(outgoingToRecipient);
+        sender.sendRawMessage(outgoingToSender);
+        recipient.sendRawMessage(outgoingToRecipient);
 
         updateLastChats(sender, recipient);
     }

@@ -1,16 +1,16 @@
 package net.sunomc.rpg.core.handler;
 
-import org.bukkit.Bukkit;
-
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.*;
-
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import net.sunomc.rpg.RpgCore;
 import net.sunomc.rpg.core.events.PacketReceiveEvent;
 import net.sunomc.rpg.core.events.PacketSendEvent;
-import org.jetbrains.annotations.Contract;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ public final class PacketHandler extends PacketAdapter {
         protocolManager.addPacketListener(this);
     }
 
-    @Contract(" -> new")
     public static void setup() {
         new PacketHandler();
     }
